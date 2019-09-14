@@ -1,18 +1,19 @@
 #pragma once
 
+#include <cmath>
 #include "windows.h"
 
 class PsevdoGenerator
 {
 private:
-	DWORD xi;
-	DWORD xi1;
-	DWORD xi2;
+	unsigned long long xi;
+	unsigned long long xi1;
+	unsigned long long xi2;
 
 public:
-	PsevdoGenerator(DWORD, DWORD, DWORD);
+	PsevdoGenerator(unsigned long long, unsigned long long, unsigned long long);
 	~PsevdoGenerator();
 
-	DWORD generate();
+	unsigned long long generate();
 };
 

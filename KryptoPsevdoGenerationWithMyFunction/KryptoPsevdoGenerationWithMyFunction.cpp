@@ -6,25 +6,28 @@
 #include "PsevdoGenerator.h"
 #include <iostream>
 
-#define BUFOUTSIZE 20000000
-#define X_SEED 1
+#define BUFOUTSIZE 50000
+#define X_SEED_1 156
+#define X_SEED_2 1901
+#define X_SEED_3 78345
 
 int main()
 {
 	FILE * out;
-	DWORD i, dwRand;
-	BYTE * hMem = 0;
+	DWORD dwRand;
+	DWORD * hMem = 0;
 	try {
 		fopen_s(&out, "rand_out.bin", "wb");
 		if (out == NULL) return -1;
-		hMem = (BYTE *) ::VirtualAlloc(0, BUFOUTSIZE, MEM_COMMIT, PAGE_READWRITE);
+		hMem = (DWORD *) ::VirtualAlloc(0, BUFOUTSIZE * 4, MEM_COMMIT, PAGE_READWRITE);
 		if (hMem) {
-			PsevdoGenerator generator = PsevdoGenerator(X_SEED, X_SEED, X_SEED);
-			for (i = 0; i < BUFOUTSIZE; i++) {
+			PsevdoGenerator generator = PsevdoGenerator(X_SEED_1, X_SEED_2, X_SEED_3);
+			for (int i = 0; i < BUFOUTSIZE; i++) {
 				dwRand = generator.generate();
-				memcpy(hMem + i, (BYTE *)&dwRand, 1);
+				memcpy(hMem + i, &dwRand, 4);
 			}
-			fwrite(hMem, 1, BUFOUTSIZE, out);
+
+			fwrite(hMem, 4, BUFOUTSIZE, out);
 			::VirtualFree(hMem, 0, MEM_RELEASE);
 		}
 	}
